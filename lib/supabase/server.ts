@@ -1,6 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+/**
+ * Creates a Supabase client for use in Server Components, Route Handlers,
+ * and Server Actions. Uses @supabase/ssr for proper cookie handling.
+ *
+ * Environment variables required:
+ *   NEXT_PUBLIC_SUPABASE_URL
+ *   NEXT_PUBLIC_SUPABASE_ANON_KEY
+ */
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -18,8 +26,8 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing user sessions.
+            // setAll called from a Server Component — safe to ignore.
+            // Middleware handles session refresh separately.
           }
         },
       },

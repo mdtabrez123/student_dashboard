@@ -17,6 +17,10 @@ const colorMap = {
   gradient: "bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-500",
 };
 
+/**
+ * Animates using scaleX (transform) NOT width — GPU-composited, zero layout shifts.
+ * transformOrigin "left" ensures it grows left-to-right.
+ */
 export function ProgressBar({
   value,
   className,
@@ -24,6 +28,8 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-20px" });
+
+  const scaleX = value / 100;
 
   return (
     <div
@@ -33,17 +39,32 @@ export function ProgressBar({
         className
       )}
     >
+      {/* scaleX animation: transform-only, no layout shift */}
       <motion.div
-        initial={{ width: 0 }}
-        animate={isInView ? { width: `${value}%` } : { width: 0 }}
-        transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-        className={cn("h-full rounded-full", colorMap[color])}
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={
+          isInView
+            ? { scaleX, opacity: 1 }
+            : { scaleX: 0, opacity: 0 }
+        }
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
+          delay: 0.2,
+        }}
+        style={{ transformOrigin: "left" }}
+        className={cn("h-full w-full rounded-full", colorMap[color])}
       />
-      {/* Shimmer overlay */}
+      {/* Shimmer — also transform-only */}
       <motion.div
-        initial={{ x: "-100%" }}
-        animate={isInView ? { x: "200%" } : { x: "-100%" }}
-        transition={{ duration: 1.4, ease: "easeInOut", delay: 0.3 }}
+        initial={{ x: "-100%", opacity: 0 }}
+        animate={isInView ? { x: "200%", opacity: 1 } : { x: "-100%", opacity: 0 }}
+        transition={{
+          duration: 1.4,
+          ease: "easeInOut",
+          delay: 0.4,
+        }}
         className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent"
       />
     </div>

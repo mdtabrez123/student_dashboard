@@ -1,3 +1,13 @@
+/**
+ * Represents a row in the Supabase `courses` table.
+ *
+ * Schema:
+ *   id         uuid       — primary key, auto-generated
+ *   title      text       — course name
+ *   progress   integer    — 0–100 completion percentage
+ *   icon_name  text       — Lucide icon name (e.g. "Code2", "Brain")
+ *   created_at timestampz — ISO 8601 string from Supabase
+ */
 export interface Course {
   id: string;
   title: string;

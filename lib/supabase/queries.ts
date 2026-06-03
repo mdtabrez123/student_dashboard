@@ -1,17 +1,28 @@
 import { createClient } from "./server";
 import type { Course } from "@/lib/types";
 
+/**
+ * Fetches all courses from the Supabase `courses` table, ordered by creation date.
+ *
+ * Called exclusively from Server Components via Next.js RSC.
+ * Throws on database error so the nearest error boundary handles it.
+ *
+ * @returns Promise<Course[]> — live data from Supabase
+ * @throws Error when the Supabase query fails
+ */
 export async function getCourses(): Promise<Course[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("courses")
-    .select("*")
+    .select("id, title, progress, icon_name, created_at")
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Error fetching courses:", error.message);
-    throw new Error(`Failed to fetch courses: ${error.message}`);
+    // Throw so Next.js error.tsx catches it — no silent fallback to fake data
+    throw new Error(
+      `Failed to fetch courses from Supabase: ${error.message} (code: ${error.code})`
+    );
   }
 
   return data as Course[];

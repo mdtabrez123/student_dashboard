@@ -10,11 +10,47 @@ interface GlassCardProps extends HTMLMotionProps<"div"> {
   hover?: boolean;
 }
 
-const glowMap = {
-  purple: "hover:shadow-[0_0_40px_rgba(124,58,237,0.15)] hover:border-purple-500/30",
-  cyan: "hover:shadow-[0_0_40px_rgba(6,182,212,0.15)] hover:border-cyan-500/30",
-  indigo: "hover:shadow-[0_0_40px_rgba(79,70,229,0.15)] hover:border-indigo-500/30",
-  none: "",
+const glowVariants = {
+  purple: {
+    rest: {
+      scale: 1,
+      boxShadow: "0 0 0px rgba(124,58,237,0)",
+      borderColor: "rgba(255,255,255,0.08)",
+    },
+    hover: {
+      scale: 1.02,
+      boxShadow: "0 0 40px rgba(124,58,237,0.18)",
+      borderColor: "rgba(124,58,237,0.35)",
+    },
+  },
+  cyan: {
+    rest: {
+      scale: 1,
+      boxShadow: "0 0 0px rgba(6,182,212,0)",
+      borderColor: "rgba(255,255,255,0.08)",
+    },
+    hover: {
+      scale: 1.02,
+      boxShadow: "0 0 40px rgba(6,182,212,0.18)",
+      borderColor: "rgba(6,182,212,0.35)",
+    },
+  },
+  indigo: {
+    rest: {
+      scale: 1,
+      boxShadow: "0 0 0px rgba(79,70,229,0)",
+      borderColor: "rgba(255,255,255,0.08)",
+    },
+    hover: {
+      scale: 1.02,
+      boxShadow: "0 0 40px rgba(79,70,229,0.18)",
+      borderColor: "rgba(79,70,229,0.35)",
+    },
+  },
+  none: {
+    rest: { scale: 1 },
+    hover: { scale: 1.02 },
+  },
 };
 
 export function GlassCard({
@@ -24,16 +60,19 @@ export function GlassCard({
   hover = true,
   ...props
 }: GlassCardProps) {
+  const variants = glowVariants[glow];
+
   return (
     <motion.div
-      whileHover={hover ? { scale: 1.02 } : undefined}
+      initial="rest"
+      whileHover={hover ? "hover" : undefined}
+      variants={variants}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={cn(
-        "relative rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl",
-        "transition-all duration-300",
-        hover && glowMap[glow],
+        "relative rounded-2xl border bg-white/[0.04] backdrop-blur-xl",
         className
       )}
+      style={{ borderColor: "rgba(255,255,255,0.08)" }}
       {...props}
     >
       {children}
