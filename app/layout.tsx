@@ -11,29 +11,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "LearnFlow — Student Learning Dashboard",
+  title: "LearnFlow — Student Dashboard",
   description:
-    "Track your learning progress, courses, and study activity with LearnFlow — a modern student dashboard powered by AI insights.",
-  keywords: ["student dashboard", "learning", "courses", "progress tracker"],
+    "Track your learning progress, course completion, and study habits in one place.",
+  keywords: ["student dashboard", "learning tracker", "courses", "progress"],
   authors: [{ name: "LearnFlow" }],
   openGraph: {
-    title: "LearnFlow — Student Learning Dashboard",
-    description: "Track your learning progress, courses, and study activity.",
+    title: "LearnFlow — Student Dashboard",
+    description: "Track your learning progress and study habits.",
     type: "website",
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="bg-[#0B0B0F] font-sans text-white antialiased">
+      <body className="font-sans antialiased" style={{ background: "#050507", color: "#f0f0f5" }}>
         <div className="flex h-screen overflow-hidden">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
+          <main className="flex-1 overflow-y-auto pb-20 md:pb-0 md:px-12 lg:px-20">
             {children}
           </main>
         </div>

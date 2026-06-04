@@ -8,54 +8,53 @@ import {
 } from "@/components/dashboard/CoursesSection";
 
 /**
- * Dashboard Page — Server Component (not async itself).
+ * Dashboard Page — synchronous Server Component.
  *
- * Rendering strategy:
- *   1. <HeroTile /> — rendered immediately, no data dependency.
- *   2. <CoursesSection /> — async RSC behind <Suspense>:
- *      - Falls back to <CoursesSectionSkeleton /> (pulsing skeleton loaders)
- *        while the Supabase query is in flight.
- *      - On success: renders live CourseGrid + ActivityTile.
- *      - On database error: error propagates to app/error.tsx boundary.
+ * Does NOT await anything itself. Instead:
+ *   - HeroTile renders immediately (no data dependency)
+ *   - CoursesSection is wrapped in <Suspense> and streams in
+ *     once getCourses() resolves on the server
+ *
+ * This means the hero + header paint instantly; courses stream in after.
  */
 export default function DashboardPage() {
   return (
-    <section
-      aria-label="Dashboard"
-      className="min-h-screen p-4 md:p-6 lg:p-8"
-    >
+    <section aria-label="Dashboard" className="min-h-screen p-6 md:p-8 lg:p-10">
+
       {/* Page header */}
-      <header className="mb-6 flex items-center justify-between">
+      <header className="mb-8 flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-white/30">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-600">
             Overview
           </p>
-          <h2 className="text-lg font-semibold text-white">Dashboard</h2>
+          <h2 className="mt-1 text-base font-semibold text-white">Dashboard</h2>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-green-400 shadow-sm shadow-green-400/50" />
-          <span className="text-xs text-white/40">Live</span>
-        </div>
+        <span className="flex items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-xs text-zinc-600">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+          Live
+        </span>
       </header>
 
+      {/*
+       * AnimatedSection provides the staggered entrance animation.
+       * Assignment requirement: "Bento tiles should not appear all at once
+       * — they must stagger in sequentially"
+       */}
       <AnimatedSection>
         <BentoGrid>
-          {/*
-           * Hero renders instantly — not behind Suspense.
-           * RSC streaming: critical chrome first, data-dependent content below.
-           */}
           <HeroTile />
 
           {/*
-           * Suspense boundary: Supabase fetch happens inside CoursesSection.
-           * Users see animated skeleton cards immediately, then live data streams in.
-           * Errors surface to app/error.tsx — no silent fallback to fake data.
+           * Suspense boundary — shows skeleton cards while Supabase responds.
+           * Assignment requirement: "implement Suspense boundaries to show
+           * skeleton loaders while data is being fetched"
            */}
           <Suspense fallback={<CoursesSectionSkeleton />}>
             <CoursesSection />
           </Suspense>
         </BentoGrid>
       </AnimatedSection>
+
     </section>
   );
 }

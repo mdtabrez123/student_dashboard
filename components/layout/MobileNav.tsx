@@ -2,80 +2,77 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import {
-  LayoutDashboard,
-  BookOpen,
-  BarChart3,
-  User,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { LayoutDashboard, BookOpen, BarChart3, User } from "lucide-react";
 
-const mobileNavItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/" },
-  { id: "courses", label: "Courses", icon: BookOpen, href: "/courses" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, href: "/analytics" },
-  { id: "profile", label: "Profile", icon: User, href: "/profile" },
-];
+const NAV_ITEMS = [
+  { id: "dashboard", label: "Home",     icon: LayoutDashboard, href: "/" },
+  { id: "courses",   label: "Courses",  icon: BookOpen,        href: "/courses" },
+  { id: "analytics", label: "Progress", icon: BarChart3,       href: "/analytics" },
+  { id: "profile",   label: "Profile",  icon: User,            href: "/profile" },
+] as const;
 
-/**
- * Mobile bottom navigation bar.
- * Uses Framer Motion layoutId="mobileActiveIndicator" for the active pip —
- * same pattern as Sidebar's layoutId="activeIndicator".
- */
 export function MobileNav() {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-white/[0.08] bg-[#0D0D12]/90 px-2 py-2 backdrop-blur-xl md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      style={{
+        background: "rgba(7,7,13,0.92)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}
     >
-      {mobileNavItems.map((item) => {
-        const isActive = pathname === item.href;
-        const Icon = item.icon;
+      <div className="flex">
+        {NAV_ITEMS.map((item) => {
+          const isActive = pathname === item.href;
+          const Icon = item.icon;
 
-        return (
-          <Link
-            key={item.id}
-            href={item.href}
-            className="relative flex flex-col items-center gap-1 rounded-xl px-4 py-2 text-xs"
-          >
-            {/* GAP 4 FIX: Framer Motion layoutId active indicator */}
-            {isActive && (
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="relative flex flex-1 flex-col items-center justify-center gap-1 py-3"
+            >
+              {/* Active top indicator */}
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    layoutId="mobile-indicator"
+                    className="absolute inset-x-4 top-0 h-[2px] rounded-full"
+                    style={{
+                      background: "linear-gradient(90deg, #7c3aed, #8b5cf6)",
+                      boxShadow: "0 0 8px rgba(139,92,246,0.6)",
+                    }}
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+              </AnimatePresence>
+
               <motion.div
-                layoutId="mobileActiveIndicator"
-                className="absolute inset-0 rounded-xl border border-purple-500/20 bg-gradient-to-t from-purple-600/15 to-indigo-600/10"
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
+                animate={{
+                  color: isActive ? "#a78bfa" : "rgba(255,255,255,0.25)",
+                  scale: isActive ? 1.08 : 1,
+                }}
+                transition={{ duration: 0.15 }}
+              >
+                <Icon className="h-5 w-5" />
+              </motion.div>
 
-            <motion.div
-              animate={
-                isActive
-                  ? { scale: 1.1, color: "rgb(192,132,252)" }
-                  : { scale: 1, color: "rgba(255,255,255,0.4)" }
-              }
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative"
-            >
-              <Icon className="h-5 w-5" />
-            </motion.div>
-
-            <motion.span
-              animate={
-                isActive
-                  ? { color: "rgb(192,132,252)" }
-                  : { color: "rgba(255,255,255,0.4)" }
-              }
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className={cn("relative font-medium")}
-            >
-              {item.label}
-            </motion.span>
-          </Link>
-        );
-      })}
+              <motion.span
+                animate={{ color: isActive ? "#a78bfa" : "rgba(255,255,255,0.25)" }}
+                transition={{ duration: 0.15 }}
+                className="text-[10px] font-semibold"
+              >
+                {item.label}
+              </motion.span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

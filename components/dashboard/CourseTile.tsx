@@ -1,151 +1,198 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
-  Code2,
-  Layers,
-  Brain,
-  Zap,
-  BookOpen,
-  Database,
-  Globe,
-  Cpu,
-  FlaskConical,
-  Rocket,
-  Shield,
-  BarChart3,
-  Terminal,
-  Wifi,
-  Lock,
+  Code2, Layers, Brain, Zap, BookOpen, Database,
+  Globe, Cpu, FlaskConical, Rocket, Shield, BarChart3,
+  Terminal, Wifi, Lock, ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AnimatedItem } from "@/components/ui/AnimatedSection";
 import type { Course } from "@/lib/types";
 
-const iconMap: Record<string, LucideIcon> = {
-  Code2,
-  Layers,
-  Brain,
-  Zap,
-  BookOpen,
-  Database,
-  Globe,
-  Cpu,
-  FlaskConical,
-  Rocket,
-  Shield,
-  BarChart3,
-  Terminal,
-  Wifi,
-  Lock,
+/* ─── Icon registry ─────────────────────────────────── */
+const ICON_MAP: Record<string, LucideIcon> = {
+  Code2, Layers, Brain, Zap, BookOpen, Database,
+  Globe, Cpu, FlaskConical, Rocket, Shield,
+  BarChart3, Terminal, Wifi, Lock,
 };
 
-const iconGradients = [
-  "from-purple-600 to-indigo-600",
-  "from-cyan-600 to-blue-600",
-  "from-indigo-600 to-purple-600",
-  "from-violet-600 to-cyan-600",
+/* ─── Per-card palette ──────────────────────────────── */
+interface Palette {
+  accent: string;
+  glow: string;
+  glowStrong: string;
+  iconBg: string;
+  iconBorder: string;
+  gradientStart: string;
+}
+
+const PALETTES: Palette[] = [
+  {
+    accent: "#8b5cf6",
+    glow: "rgba(139,92,246,0.18)",
+    glowStrong: "rgba(139,92,246,0.28)",
+    iconBg: "rgba(139,92,246,0.1)",
+    iconBorder: "rgba(139,92,246,0.2)",
+    gradientStart: "rgba(139,92,246,0.06)",
+  },
+  {
+    accent: "#06b6d4",
+    glow: "rgba(6,182,212,0.18)",
+    glowStrong: "rgba(6,182,212,0.28)",
+    iconBg: "rgba(6,182,212,0.1)",
+    iconBorder: "rgba(6,182,212,0.2)",
+    gradientStart: "rgba(6,182,212,0.06)",
+  },
+  {
+    accent: "#10b981",
+    glow: "rgba(16,185,129,0.18)",
+    glowStrong: "rgba(16,185,129,0.28)",
+    iconBg: "rgba(16,185,129,0.1)",
+    iconBorder: "rgba(16,185,129,0.2)",
+    gradientStart: "rgba(16,185,129,0.06)",
+  },
+  {
+    accent: "#f59e0b",
+    glow: "rgba(245,158,11,0.18)",
+    glowStrong: "rgba(245,158,11,0.28)",
+    iconBg: "rgba(245,158,11,0.1)",
+    iconBorder: "rgba(245,158,11,0.2)",
+    gradientStart: "rgba(245,158,11,0.06)",
+  },
 ];
 
-// Gradient mesh colors per card index
-const meshColors = [
-  "rgba(124,58,237,0.12)",   // purple
-  "rgba(6,182,212,0.12)",    // cyan
-  "rgba(79,70,229,0.12)",    // indigo
-  "rgba(139,92,246,0.12)",   // violet
-];
+/* ─── Status label ──────────────────────────────────── */
+function getStatusLabel(progress: number): string {
+  if (progress === 0)   return "Not started";
+  if (progress < 25)   return "Just started";
+  if (progress < 50)   return "In progress";
+  if (progress < 75)   return "Halfway there";
+  if (progress < 100)  return "Almost done";
+  return "Completed ✓";
+}
 
-const glowTypes = ["purple", "cyan", "indigo", "purple"] as const;
-
+/* ─── Component ─────────────────────────────────────── */
 interface CourseTileProps {
   course: Course;
   index: number;
 }
 
 export function CourseTile({ course, index }: CourseTileProps) {
-  const Icon = iconMap[course.icon_name] ?? BookOpen;
-  const gradient = iconGradients[index % iconGradients.length];
-  const glow = glowTypes[index % glowTypes.length];
-  const meshColor = meshColors[index % meshColors.length];
-  const meshColor2 = meshColors[(index + 2) % meshColors.length];
-
-  const statusLabel =
-    course.progress < 30
-      ? "Just started"
-      : course.progress < 70
-      ? "In progress"
-      : course.progress < 100
-      ? "Almost there"
-      : "Completed";
+  const Icon = ICON_MAP[course.icon_name] ?? BookOpen;
+  const p = PALETTES[index % PALETTES.length];
 
   return (
     <AnimatedItem>
-      <GlassCard glow={glow} className="group h-full p-6">
-        {/* GAP 6 FIX: Gradient mesh background per card */}
-        <div
+      <motion.article
+        whileHover="hover"
+        initial="rest"
+        animate="rest"
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl"
+        style={{
+          background: "linear-gradient(160deg, #0f0f1a 0%, #0d0d17 100%)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          boxShadow: "0 4px 32px rgba(0,0,0,0.35)",
+        }}
+      >
+        {/* ── Animated hover glow border ── */}
+        <motion.div
+          aria-hidden
           className="pointer-events-none absolute inset-0 rounded-2xl"
+          variants={{
+            rest: { opacity: 0 },
+            hover: { opacity: 1 },
+          }}
+          transition={{ duration: 0.2 }}
           style={{
-            background: `radial-gradient(ellipse at 20% 20%, ${meshColor} 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, ${meshColor2} 0%, transparent 55%)`,
+            boxShadow: `0 0 0 1px ${p.glow}, 0 12px 48px -8px ${p.glow}`,
           }}
         />
 
-        {/* Grain texture overlay */}
+        {/* ── Top-corner color gradient ── */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-2xl opacity-[0.025]"
+          aria-hidden
+          className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-            backgroundSize: "128px 128px",
+            background: `radial-gradient(circle, ${p.gradientStart} 0%, transparent 70%)`,
+            filter: "blur(20px)",
           }}
         />
 
-        {/* Icon */}
-        <div
-          className={`relative mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} shadow-lg`}
-        >
-          <Icon className="h-5 w-5 text-white" />
-        </div>
+        {/* ── Card body ── */}
+        <div className="relative flex h-full flex-col p-5">
+          {/* Icon + arrow row */}
+          <div className="mb-5 flex items-start justify-between">
+            <div
+              className="flex h-11 w-11 items-center justify-center rounded-xl"
+              style={{
+                background: p.iconBg,
+                border: `1px solid ${p.iconBorder}`,
+                boxShadow: `0 0 24px -4px ${p.glow}`,
+              }}
+            >
+              <Icon className="h-5 w-5" style={{ color: p.accent }} />
+            </div>
 
-        {/* GAP 5 FIX: Title with Framer Motion hover — no CSS group-hover */}
-        <motion.h3
-          initial="rest"
-          whileHover="hover"
-          className="relative mb-1 text-sm font-semibold text-white"
-        >
-          <motion.span
-            variants={{
-              rest: { color: "rgba(255,255,255,1)" },
-              hover: { color: "rgba(216,180,254,1)" },
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
+            <motion.div
+              aria-hidden
+              variants={{
+                rest:  { opacity: 0, scale: 0.75, x: 6, y: -6 },
+                hover: { opacity: 1, scale: 1,    x: 0, y: 0  },
+              }}
+              transition={{ duration: 0.16 }}
+              className="flex h-7 w-7 items-center justify-center rounded-lg"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.09)",
+              }}
+            >
+              <ArrowUpRight className="h-3.5 w-3.5" style={{ color: "rgba(255,255,255,0.5)" }} />
+            </motion.div>
+          </div>
+
+          {/* Title */}
+          <h3 className="mb-1.5 text-sm font-semibold leading-snug text-white">
             {course.title}
-          </motion.span>
-        </motion.h3>
+          </h3>
 
-        <p className="relative mb-4 text-xs text-white/40">{statusLabel}</p>
-
-        {/* Progress */}
-        <ProgressBar value={course.progress} />
-
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-white/30">Progress</span>
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-              delay: 0.4 + index * 0.08,
-            }}
-            className="text-xs font-bold text-white/70"
+          {/* Status */}
+          <p
+            className="mb-5 text-[11px] font-medium"
+            style={{ color: "rgba(255,255,255,0.32)" }}
           >
-            {course.progress}%
-          </motion.span>
+            {getStatusLabel(course.progress)}
+          </p>
+
+          {/* Progress */}
+          <div className="mt-auto">
+            <div className="mb-2 flex items-center justify-between">
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: "rgba(255,255,255,0.28)" }}
+              >
+                Progress
+              </span>
+              <motion.span
+                className="text-xs font-bold tabular-nums"
+                style={{ color: p.accent }}
+                variants={{
+                  rest:  { textShadow: "none" },
+                  hover: { textShadow: `0 0 12px ${p.glow}` },
+                }}
+              >
+                {course.progress}%
+              </motion.span>
+            </div>
+            <ProgressBar
+              value={course.progress}
+              accentColor={p.accent}
+              glowColor={p.glowStrong}
+            />
+          </div>
         </div>
-      </GlassCard>
+      </motion.article>
     </AnimatedItem>
   );
 }

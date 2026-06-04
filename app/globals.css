@@ -1,41 +1,10 @@
 @import "tailwindcss";
 
-/* ─── Tailwind v4 Theme ─────────────────────────────── */
 @theme {
   --font-sans: var(--font-inter), system-ui, sans-serif;
-
-  --color-neon-purple: #7c3aed;
-  --color-neon-cyan: #06b6d4;
-  --color-neon-indigo: #4f46e5;
-  --color-dark-base: #0B0B0F;
-  --color-dark-surface: #0D0D12;
-
-  --animate-shimmer: shimmer 2s linear infinite;
-  --animate-float: float 6s ease-in-out infinite;
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-}
-
-/* ─── Design Tokens ─────────────────────────────────── */
-:root {
-  --bg-base: #0B0B0F;
-  --bg-surface: #0D0D12;
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glow-purple: #7c3aed;
-  --glow-cyan: #06b6d4;
-  --glow-indigo: #4f46e5;
-}
-
-/* ─── Base Reset ─────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -45,51 +14,138 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--bg-base);
-  color: #ffffff;
+  background: #050507;
+  color: #f0f0f5;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image:
-    radial-gradient(ellipse at 15% 30%, rgba(124, 58, 237, 0.07) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 70%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(79, 70, 229, 0.06) 0%, transparent 60%);
-  background-attachment: fixed;
   min-height: 100vh;
 }
 
 /* ─── Scrollbar ─────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.3);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.5);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* ─── Selection ─────────────────────────────────────── */
 ::selection {
-  background-color: rgba(124, 58, 237, 0.35);
+  background: rgba(124, 58, 237, 0.28);
   color: #fff;
 }
 
-/* ─── Focus Visible ─────────────────────────────────── */
+/* ─── Focus ─────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid rgba(124, 58, 237, 0.6);
+  outline: 2px solid rgba(139, 92, 246, 0.65);
   outline-offset: 2px;
   border-radius: 6px;
+}
+
+/* ─── Keyframes ─────────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+@keyframes aurora {
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(28px, -18px) scale(1.06);
+  }
+  66% {
+    transform: translate(-18px, 14px) scale(0.95);
+  }
+}
+
+@keyframes aurora-b {
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  40% {
+    transform: translate(-24px, 22px) scale(1.09);
+  }
+  70% {
+    transform: translate(16px, -12px) scale(0.93);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ─── Utility classes ────────────────────────────────── */
+.skeleton-pulse {
+  animation: skeleton-pulse 1.7s ease-in-out infinite;
+}
+
+.aurora-a {
+  animation: aurora 20s ease-in-out infinite;
+}
+
+.aurora-b {
+  animation: aurora-b 26s ease-in-out infinite;
+}
+
+.aurora-c {
+  animation: aurora 16s ease-in-out infinite reverse;
+}
+
+.shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.glow-pulse {
+  animation: glow-pulse 3.2s ease-in-out infinite;
+}
+
+.float-y {
+  animation: float-y 4s ease-in-out infinite;
 }

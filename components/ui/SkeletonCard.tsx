@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 
 interface SkeletonCardProps {
@@ -5,13 +7,15 @@ interface SkeletonCardProps {
   variant?: "hero" | "course" | "activity";
 }
 
-function Skeleton({ className }: { className?: string }) {
+/**
+ * Reusable skeleton bone.
+ * Uses the .skeleton-pulse CSS class defined in globals.css.
+ * Assignment requirement: "skeleton loaders should have a subtle pulsing animation"
+ */
+function Bone({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "animate-pulse rounded-lg bg-white/[0.06]",
-        className
-      )}
+      className={cn("skeleton-pulse rounded-lg bg-white/[0.06]", className)}
     />
   );
 }
@@ -21,16 +25,25 @@ export function SkeletonCard({ className, variant = "course" }: SkeletonCardProp
     return (
       <div
         className={cn(
-          "col-span-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8",
+          "col-span-full rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-6 md:p-8",
           className
         )}
       >
-        <Skeleton className="mb-3 h-4 w-32" />
-        <Skeleton className="mb-2 h-8 w-64" />
-        <Skeleton className="h-4 w-48" />
-        <div className="mt-6 flex gap-4">
-          <Skeleton className="h-16 w-32 rounded-xl" />
-          <Skeleton className="h-16 w-32 rounded-xl" />
+        {/* Greeting + title */}
+        <div className="mb-6">
+          <Bone className="mb-2 h-3 w-24" />
+          <Bone className="mb-2 h-7 w-56" />
+          <Bone className="h-3.5 w-44" />
+        </div>
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Bone key={i} className="h-20 rounded-xl" />
+          ))}
+        </div>
+        {/* Streak */}
+        <div className="mt-5">
+          <Bone className="mb-2 h-2 w-full rounded-full" />
         </div>
       </div>
     );
@@ -40,39 +53,40 @@ export function SkeletonCard({ className, variant = "course" }: SkeletonCardProp
     return (
       <div
         className={cn(
-          "col-span-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6",
+          "col-span-full md:col-span-2 lg:col-span-4 rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5",
           className
         )}
       >
-        <Skeleton className="mb-4 h-5 w-40" />
-        <div className="grid grid-cols-[repeat(52,_1fr)] gap-1">
-          {Array.from({ length: 364 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-sm" />
-          ))}
+        <Bone className="mb-1.5 h-4 w-32" />
+        <Bone className="mb-5 h-3 w-48" />
+        {/* Heatmap cells */}
+        <div className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-[3px]">
+            {Array.from({ length: 52 }).map((_, wi) => (
+              <div key={wi} className="flex flex-col gap-[3px]">
+                {Array.from({ length: 7 }).map((_, di) => (
+                  <Bone key={di} className="h-[12px] w-[12px] rounded-[3px]" />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
+  // Course card skeleton
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6",
+        "rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5",
         className
       )}
     >
-      <div className="mb-4 flex items-center gap-3">
-        <Skeleton className="h-10 w-10 rounded-xl" />
-        <div className="flex-1">
-          <Skeleton className="mb-2 h-4 w-3/4" />
-          <Skeleton className="h-3 w-1/2" />
-        </div>
-      </div>
-      <Skeleton className="mb-2 h-1.5 w-full rounded-full" />
-      <div className="mt-3 flex justify-between">
-        <Skeleton className="h-3 w-20" />
-        <Skeleton className="h-3 w-8" />
-      </div>
+      <Bone className="mb-5 h-10 w-10 rounded-xl" />
+      <Bone className="mb-1.5 h-4 w-36" />
+      <Bone className="mb-5 h-3 w-24" />
+      <Bone className="h-[3px] w-full rounded-full" />
     </div>
   );
 }

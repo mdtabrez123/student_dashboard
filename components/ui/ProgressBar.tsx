@@ -6,66 +6,49 @@ import { cn } from "@/lib/utils";
 
 interface ProgressBarProps {
   value: number;
+  accentColor?: string;
+  glowColor?: string;
   className?: string;
-  color?: "purple" | "cyan" | "indigo" | "gradient";
 }
 
-const colorMap = {
-  purple: "bg-purple-500",
-  cyan: "bg-cyan-500",
-  indigo: "bg-indigo-500",
-  gradient: "bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-500",
-};
-
-/**
- * Animates using scaleX (transform) NOT width — GPU-composited, zero layout shifts.
- * transformOrigin "left" ensures it grows left-to-right.
- */
 export function ProgressBar({
   value,
+  accentColor = "#8b5cf6",
+  glowColor,
   className,
-  color = "gradient",
 }: ProgressBarProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-20px" });
-
-  const scaleX = value / 100;
+  const isInView = useInView(ref, { once: true, margin: "-10px" });
 
   return (
     <div
       ref={ref}
       className={cn(
-        "relative h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]",
+        "relative h-1.5 w-full overflow-hidden rounded-full",
         className
       )}
+      style={{ background: "rgba(255,255,255,0.06)" }}
     >
-      {/* scaleX animation: transform-only, no layout shift */}
+      {/* Fill */}
       <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={
-          isInView
-            ? { scaleX, opacity: 1 }
-            : { scaleX: 0, opacity: 0 }
-        }
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 20,
-          delay: 0.2,
+        initial={{ scaleX: 0 }}
+        animate={isInView ? { scaleX: value / 100 } : { scaleX: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.12 }}
+        style={{
+          transformOrigin: "left",
+          background: accentColor,
+          boxShadow: glowColor ? `0 0 10px ${glowColor}` : undefined,
         }}
-        style={{ transformOrigin: "left" }}
-        className={cn("h-full w-full rounded-full", colorMap[color])}
+        className="h-full w-full rounded-full"
       />
-      {/* Shimmer — also transform-only */}
+
+      {/* Shimmer — fires once on mount */}
       <motion.div
+        aria-hidden
         initial={{ x: "-100%", opacity: 0 }}
-        animate={isInView ? { x: "200%", opacity: 1 } : { x: "-100%", opacity: 0 }}
-        transition={{
-          duration: 1.4,
-          ease: "easeInOut",
-          delay: 0.4,
-        }}
-        className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        animate={isInView ? { x: "350%", opacity: [0, 0.55, 0] } : {}}
+        transition={{ duration: 0.9, ease: "easeOut", delay: 0.35 }}
+        className="absolute inset-0 w-1/3 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
       />
     </div>
   );
