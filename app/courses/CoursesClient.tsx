@@ -2,45 +2,27 @@
 
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
-import {
-  Code2, Layers, Brain, Zap, BookOpen, Database,
-  Globe, Cpu, FlaskConical, Rocket, Shield, BarChart3,
-  Clock, Users, Star, PlayCircle, Lock, Search,
-} from "lucide-react";
+import { BookOpen, Lock, Search } from "lucide-react";
 import type { Course } from "@/lib/types";
-
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  Code2, Layers, Brain, Zap, BookOpen, Database,
-  Globe, Cpu, FlaskConical, Rocket, Shield, BarChart3,
-};
-
-const COLORS = ["#7c3aed", "#0ea5e9", "#10b981", "#f59e0b"];
-const BG_COLORS = [
-  "rgba(124,58,237,0.14)",
-  "rgba(14,165,233,0.14)",
-  "rgba(16,185,129,0.14)",
-  "rgba(245,158,11,0.14)"
-];
+import { getCourseDetails } from "@/components/dashboard/CourseTile";
 
 const AVAILABLE = [
-  { id: "explore-1", title: "React Architecture", iconName: "Globe", color: "#ec4899", iconBg: "rgba(236,72,153,0.14)", rating: 4.9, lessons: 28, duration: "15h", students: 9210, tag: "Popular" },
-  { id: "explore-2", title: "Database Design", iconName: "Database", color: "#14b8a6", iconBg: "rgba(20,184,166,0.14)", rating: 4.7, lessons: 20, duration: "11h", students: 4330, tag: "New" },
-  { id: "explore-3", title: "Cloud & DevOps", iconName: "Cpu", color: "#8b5cf6", iconBg: "rgba(139,92,246,0.14)", rating: 4.8, lessons: 36, duration: "22h", students: 7650, tag: "Trending" },
-  { id: "explore-4", title: "Cybersecurity", iconName: "Shield", color: "#ef4444", iconBg: "rgba(239,68,68,0.14)", rating: 4.6, lessons: 22, duration: "13h", students: 3120, tag: "" },
-  { id: "explore-5", title: "Data Science", iconName: "BarChart3", color: "#f97316", iconBg: "rgba(249,115,22,0.14)", rating: 4.8, lessons: 40, duration: "24h", students: 8900, tag: "Popular" },
-  { id: "explore-6", title: "AI Engineering", iconName: "FlaskConical", color: "#06b6d4", iconBg: "rgba(6,182,212,0.14)", rating: 4.9, lessons: 30, duration: "19h", students: 11200, tag: "New" },
-];
+  { id: "explore-1", title: "React Architecture", iconName: "Globe", tag: "Popular" },
+  { id: "explore-2", title: "Database Design", iconName: "Database", tag: "New" },
+  { id: "explore-3", title: "Cloud & DevOps", iconName: "Cpu", tag: "Trending" },
+  { id: "explore-4", title: "Cybersecurity", iconName: "Shield", tag: "" },
+  { id: "explore-5", title: "Data Science", iconName: "BarChart3", tag: "Popular" },
+  { id: "explore-6", title: "AI Engineering", iconName: "FlaskConical", tag: "New" },
+] as const;
 
 const FILTERS = ["All", "In Progress", "Almost Done", "Completed"];
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, type: "spring" as const, stiffness: 280, damping: 22 },
-  }),
-};
+const colorPairs = [
+  { accent: "var(--color-gold)", bg: "rgba(201, 168, 76, 0.1)", border: "rgba(201, 168, 76, 0.2)" },
+  { accent: "var(--color-ember)", bg: "rgba(212, 98, 42, 0.1)", border: "rgba(212, 98, 42, 0.2)" },
+  { accent: "var(--color-sage)", bg: "rgba(107, 143, 110, 0.1)", border: "rgba(107, 143, 110, 0.2)" },
+  { accent: "#8b7dd8", bg: "rgba(139, 125, 216, 0.1)", border: "rgba(139, 125, 216, 0.2)" },
+];
 
 interface CoursesClientProps {
   initialEnrolled: Course[];
@@ -50,31 +32,13 @@ export function CoursesClient({ initialEnrolled }: CoursesClientProps) {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
 
-  // Map Supabase courses to the UI layout properties dynamically
   const enrolledMapped = useMemo(() => {
-    return initialEnrolled.map((course, idx) => {
-      const color = COLORS[idx % COLORS.length];
-      const iconBg = BG_COLORS[idx % BG_COLORS.length];
-      const Icon = ICON_MAP[course.icon_name] ?? BookOpen;
-
+    return initialEnrolled.map((course) => {
       let status = "In Progress";
       if (course.progress === 0) status = "Not Started";
       else if (course.progress >= 90 && course.progress < 100) status = "Almost Done";
       else if (course.progress === 100) status = "Completed";
-
-      // Deterministic decorative stats based on index/progress
-      const lessons = 12 + (idx * 4) + (course.progress % 5);
-      const duration = `${6 + idx * 3}h ${10 + (course.progress % 30)}m`;
-
-      return {
-        ...course,
-        color,
-        iconBg,
-        icon: Icon,
-        status,
-        lessons,
-        duration
-      };
+      return { ...course, status };
     });
   }, [initialEnrolled]);
 
@@ -87,119 +51,303 @@ export function CoursesClient({ initialEnrolled }: CoursesClientProps) {
   }, [enrolledMapped, filter, search]);
 
   return (
-    <section aria-label="Courses" className="min-h-screen p-6 md:p-8 lg:p-10">
+    <section aria-label="Courses" style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}>
       {/* Header */}
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Learning</p>
-          <h1 className="mt-1 text-base font-semibold text-white">My Courses</h1>
+      <header style={{ marginBottom: "2rem" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "1rem",
+          }}
+        >
+          <div>
+            <p
+              style={{
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--color-gold)",
+                marginBottom: "0.35rem",
+              }}
+            >
+              Learning
+            </p>
+            <h1
+              className="font-display"
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "var(--color-paper)",
+                lineHeight: 1.1,
+              }}
+            >
+              My Courses
+            </h1>
+          </div>
+          <span className="badge-warm" style={{ marginTop: "0.25rem" }}>
+            {initialEnrolled.length} enrolled
+          </span>
         </div>
-        <span className="rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-xs text-zinc-500">
-          {initialEnrolled.length} enrolled
-        </span>
+        <div className="divider-warm" style={{ marginTop: "1.5rem" }} />
       </header>
 
       {/* Search + Filter */}
-      <div className="mb-8 flex flex-col items-center justify-center gap-4">
-        <div className="relative w-full max-w-xs sm:max-w-md">
-          <Search
-            className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-600"
-            style={{ left: "12px" }}
-          />
-          <input
-            id="course-search"
-            type="text"
-            placeholder="Search courses…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: "36px" }}
-            className="w-full rounded-xl border border-white/[0.07] bg-white/[0.03] py-2.5 pr-4 text-xs text-zinc-300 placeholder-zinc-600 outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all"
-          />
-        </div>
-        <div className="flex flex-wrap justify-center gap-1.5">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              id={`filter-${f.replace(/\s+/g, "-").toLowerCase()}`}
-              onClick={() => setFilter(f)}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
-                filter === f
-                  ? "bg-violet-600 text-white"
-                  : "border border-white/[0.07] bg-white/[0.03] text-zinc-500 hover:text-zinc-300"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+      <div style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", alignItems: "center" }}>
+          {/* Search bar */}
+          <div style={{ position: "relative", width: "100%", maxWidth: "440px" }}>
+            <Search
+              size={14}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "12px",
+                transform: "translateY(-50%)",
+                color: "var(--color-slate-warm)",
+                pointerEvents: "none",
+              }}
+            />
+            <input
+              id="course-search"
+              type="text"
+              placeholder="Search courses…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                width: "100%",
+                paddingLeft: "36px",
+                paddingRight: "1rem",
+                paddingTop: "0.6rem",
+                paddingBottom: "0.6rem",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--color-border-dim)",
+                background: "var(--color-surface-2)",
+                color: "var(--color-paper)",
+                fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.15s ease",
+                fontFamily: "var(--font-body)",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "rgba(201, 168, 76, 0.4)")}
+              onBlur={(e) => (e.target.style.borderColor = "var(--color-border-dim)")}
+            />
+          </div>
+
+          {/* Filter pills */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", justifyContent: "center" }}>
+            {FILTERS.map((f) => (
+              <button
+                key={f}
+                id={`filter-${f.replace(/\s+/g, "-").toLowerCase()}`}
+                onClick={() => setFilter(f)}
+                style={{
+                  padding: "5px 14px",
+                  borderRadius: "99px",
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.02em",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  background: filter === f ? "rgba(201, 168, 76, 0.15)" : "var(--color-surface-2)",
+                  border: filter === f ? "1px solid rgba(201, 168, 76, 0.35)" : "1px solid var(--color-border-dim)",
+                  color: filter === f ? "var(--color-gold-light)" : "var(--color-slate-warm)",
+                }}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Enrolled Courses */}
-      <div className="mb-10">
-        <h2 className="mb-4 text-sm font-semibold text-white">Enrolled</h2>
+      <div style={{ marginBottom: "3rem" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "1rem",
+          }}
+        >
+          <h2
+            className="font-display"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: 700,
+              color: "var(--color-paper)",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Enrolled
+          </h2>
+          <span style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>
+            {filteredEnrolled.length} of {enrolledMapped.length}
+          </span>
+        </div>
+
         {filteredEnrolled.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-12 text-center">
-            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.05]">
-              <BookOpen className="h-5 w-5 text-zinc-600" />
+          <div
+            className="card-editorial"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "3rem",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                marginBottom: "1rem",
+                width: 44,
+                height: 44,
+                borderRadius: "10px",
+                background: "rgba(201, 168, 76, 0.08)",
+                border: "1px solid var(--color-border)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <BookOpen size={20} color="var(--color-gold)" />
             </div>
-            <h3 className="mb-1.5 text-sm font-semibold text-white">No courses match search or filter</h3>
-            <p className="max-w-xs text-xs text-zinc-500">
-              Try adjusting your query or filter keywords.
+            <h3
+              className="font-display"
+              style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-paper)", marginBottom: "0.5rem" }}
+            >
+              No courses match
+            </h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--color-slate-warm)" }}>
+              Try adjusting your search or filter.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "1rem",
+            }}
+          >
             {filteredEnrolled.map((course, i) => {
-              const Icon = course.icon;
+              const details = getCourseDetails(course.title, i);
+              const color = colorPairs[i % colorPairs.length];
+              const circumference = 2 * Math.PI * 13;
+              const strokeDashoffset = circumference - (course.progress / 100) * circumference;
+
+              const statusBadge =
+                course.progress === 100
+                  ? { label: "Completed", color: "var(--color-sage)", bg: "rgba(107,143,110,0.12)", border: "rgba(107,143,110,0.25)" }
+                  : course.progress === 0
+                  ? { label: "Not Started", color: "var(--color-slate-warm)", bg: "var(--color-surface-3)", border: "var(--color-border-dim)" }
+                  : course.progress >= 90
+                  ? { label: "Almost Done", color: "var(--color-gold-light)", bg: "rgba(201,168,76,0.12)", border: "rgba(201,168,76,0.25)" }
+                  : { label: "In Progress", color: "var(--color-ember)", bg: "rgba(212,98,42,0.1)", border: "rgba(212,98,42,0.2)" };
+
               return (
                 <motion.article
                   key={course.id}
-                  custom={i}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{ scale: 1.02, boxShadow: `0 0 0 1px ${course.color}55, 0 12px 28px ${course.color}18` }}
-                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                  className="relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5 cursor-pointer"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, type: "spring", stiffness: 300, damping: 24 }}
+                  whileHover={{ scale: 1.015, y: -3 }}
+                  className="card-editorial"
+                  style={{
+                    padding: "1.5rem",
+                    cursor: "default",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                  }}
                 >
-                  {/* Ambient glow */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0"
-                    style={{ background: `radial-gradient(ellipse 70% 55% at 10% 10%, ${course.iconBg} 0%, transparent 65%)` }}
-                  />
-
-                  {/* Icon */}
-                  <div
-                    className="relative mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.05]"
-                    style={{ background: course.iconBg }}
-                  >
-                    <Icon className="h-5 w-5" style={{ color: course.color }} />
-                  </div>
-
-                  <h3 className="relative mb-1 text-sm font-semibold text-white">{course.title}</h3>
-                  <p className="relative mb-1 text-xs text-zinc-500">{course.status}</p>
-
-                  <div className="relative mb-3 flex items-center gap-3 text-[10px] text-zinc-600">
-                    <span className="flex items-center gap-1"><PlayCircle className="h-3 w-3" />{course.lessons} lessons</span>
-                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{course.duration}</span>
-                  </div>
-
-                  {/* Progress */}
-                  <div className="relative mt-auto">
-                    <div className="mb-1.5 flex items-center justify-between text-[10px]">
-                      <span className="text-zinc-600">Progress</span>
-                      <span className="font-medium tabular-nums text-zinc-400">{course.progress}%</span>
+                  {/* Icon + progress ring */}
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1rem" }}>
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "10px",
+                        background: color.bg,
+                        border: `1px solid ${color.border}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <BookOpen size={18} color={color.accent} />
                     </div>
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                    <div style={{ position: "relative", width: 32, height: 32 }}>
+                      <svg width="32" height="32" style={{ transform: "rotate(-90deg)" }}>
+                        <circle cx="16" cy="16" r="13" fill="transparent" stroke="var(--color-surface-3)" strokeWidth="2" />
+                        <circle
+                          cx="16" cy="16" r="13"
+                          fill="transparent"
+                          stroke={color.accent}
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={strokeDashoffset}
+                          style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1)", opacity: 0.8 }}
+                        />
+                      </svg>
+                      <span
+                        className="font-mono"
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          fontSize: "0.5rem",
+                          fontWeight: 700,
+                          color: "var(--color-paper)",
+                        }}
+                      >
+                        {course.progress}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: color.accent, marginBottom: "4px", opacity: 0.8 }}>
+                    {details.level}
+                  </p>
+                  <h3 style={{ fontSize: "0.9rem", fontWeight: 600, lineHeight: 1.3, color: "var(--color-paper)", marginBottom: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {course.title}
+                  </h3>
+                  <p style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)", lineHeight: 1.5, marginBottom: "1rem" }}>
+                    {details.subtitle}
+                  </p>
+
+                  {/* Progress bar */}
+                  <div style={{ marginBottom: "1rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "0.7rem", color: "var(--color-slate-warm)" }}>Progress</span>
+                      <span className="font-mono" style={{ fontSize: "0.78rem", fontWeight: 600, color: color.accent }}>{course.progress}%</span>
+                    </div>
+                    <div className="progress-track">
                       <motion.div
+                        className="progress-fill"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: course.progress / 100 }}
-                        transition={{ delay: 0.3 + i * 0.08, type: "spring", stiffness: 220, damping: 22 }}
-                        style={{ transformOrigin: "left", background: course.color }}
-                        className="h-full rounded-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 + i * 0.05 }}
+                        style={{ background: `linear-gradient(90deg, ${color.accent}66, ${color.accent})` }}
                       />
                     </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{ marginTop: "auto", paddingTop: "1rem", borderTop: "1px solid var(--color-border-dim)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <p style={{ fontSize: "0.7rem", color: "var(--color-slate-warm)" }}>{details.lessons} lessons · {details.duration}</p>
+                    <span style={{ padding: "2px 8px", borderRadius: "99px", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.05em", color: statusBadge.color, background: statusBadge.bg, border: `1px solid ${statusBadge.border}` }}>
+                      {statusBadge.label}
+                    </span>
                   </div>
                 </motion.article>
               );
@@ -210,46 +358,82 @@ export function CoursesClient({ initialEnrolled }: CoursesClientProps) {
 
       {/* Available Courses */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-white">Explore More</h2>
-          <span className="text-xs text-zinc-600">{AVAILABLE.length} available</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+          <h2
+            className="font-display"
+            style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em" }}
+          >
+            Explore More
+          </h2>
+          <span style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>{AVAILABLE.length} available</span>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: "1rem",
+          }}
+        >
           {AVAILABLE.map((course, i) => {
-            const Icon = ICON_MAP[course.iconName] ?? BookOpen;
+            const details = getCourseDetails(course.title, i + initialEnrolled.length);
+            const color = colorPairs[(i + initialEnrolled.length) % colorPairs.length];
             return (
               <motion.article
                 key={course.id}
-                custom={i + initialEnrolled.length}
-                variants={itemVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ scale: 1.015, boxShadow: `0 0 0 1px ${course.color}44, 0 10px 24px ${course.color}14` }}
-                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-4 cursor-pointer"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (i + initialEnrolled.length) * 0.05, type: "spring", stiffness: 300, damping: 24 }}
+                whileHover={{ scale: 1.015, y: -3 }}
+                className="card-editorial"
+                style={{
+                  padding: "1.5rem",
+                  cursor: "default",
+                  display: "flex",
+                  flexDirection: "column",
+                  opacity: 0.75,
+                }}
               >
-                <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.05]"
-                  style={{ background: course.iconBg }}
-                >
-                  <Icon className="h-5 w-5" style={{ color: course.color }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-semibold text-white truncate">{course.title}</h3>
+                {/* Icon + Lock */}
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1rem" }}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "10px",
+                      background: color.bg,
+                      border: `1px solid ${color.border}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <BookOpen size={18} color={color.accent} />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     {course.tag && (
-                      <span className="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-semibold" style={{ background: `${course.color}22`, color: course.color }}>
-                        {course.tag}
-                      </span>
+                      <span className="badge-warm" style={{ fontSize: "0.6rem" }}>{course.tag}</span>
                     )}
-                  </div>
-                  <div className="mt-1 flex items-center gap-3 text-[10px] text-zinc-600">
-                    <span className="flex items-center gap-0.5"><Star className="h-2.5 w-2.5 fill-yellow-400 text-yellow-400" />{course.rating}</span>
-                    <span className="flex items-center gap-1"><PlayCircle className="h-2.5 w-2.5" />{course.lessons} lessons</span>
-                    <span className="flex items-center gap-1"><Users className="h-2.5 w-2.5" />{(course.students / 1000).toFixed(1)}k</span>
+                    <Lock size={14} color="var(--color-slate-warm)" />
                   </div>
                 </div>
-                <Lock className="h-4 w-4 shrink-0 text-zinc-700" />
+
+                <p style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: color.accent, marginBottom: "4px", opacity: 0.8 }}>
+                  {details.level}
+                </p>
+                <h3 style={{ fontSize: "0.9rem", fontWeight: 600, lineHeight: 1.3, color: "var(--color-paper)", marginBottom: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {course.title}
+                </h3>
+                <p style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)", lineHeight: 1.5, marginBottom: "1rem" }}>
+                  {details.subtitle}
+                </p>
+
+                <div style={{ marginTop: "auto", paddingTop: "1rem", borderTop: "1px solid var(--color-border-dim)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <p style={{ fontSize: "0.7rem", color: "var(--color-slate-warm)" }}>{details.lessons} lessons · {details.duration}</p>
+                  <span style={{ padding: "2px 8px", borderRadius: "99px", fontSize: "0.65rem", fontWeight: 600, color: "var(--color-slate-warm)", background: "var(--color-surface-3)", border: "1px solid var(--color-border-dim)" }}>
+                    Locked
+                  </span>
+                </div>
               </motion.article>
             );
           })}

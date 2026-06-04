@@ -1,25 +1,57 @@
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
-import { BentoGrid } from "@/components/dashboard/BentoGrid";
 
 export default function Loading() {
   return (
-    <section aria-label="Loading dashboard" aria-busy="true" className="min-h-screen p-4 md:p-6 lg:p-8">
+    <section
+      aria-label="Loading dashboard"
+      aria-busy="true"
+      style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}
+    >
       {/* Header skeleton */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="space-y-1.5">
-          <div className="h-3 w-14 rounded-md bg-white/[0.05]" style={{ animation: "pulse 1.8s ease-in-out infinite" }} />
-          <div className="h-4 w-20 rounded-md bg-white/[0.06]" style={{ animation: "pulse 1.8s ease-in-out infinite" }} />
-        </div>
+      <div style={{ marginBottom: "2rem" }}>
+        <div
+          className="skeleton-pulse"
+          style={{
+            height: "0.75rem",
+            width: "80px",
+            borderRadius: "4px",
+            background: "var(--color-surface-3)",
+            marginBottom: "8px",
+          }}
+        />
+        <div
+          className="skeleton-pulse"
+          style={{
+            height: "2rem",
+            width: "240px",
+            borderRadius: "6px",
+            background: "var(--color-surface-3)",
+          }}
+        />
+        <div className="divider-warm" style={{ marginTop: "1.5rem" }} />
       </div>
 
-      {/* Grid skeleton */}
-      <BentoGrid>
-        <SkeletonCard variant="hero" />
-        {Array.from({ length: 4 }).map((_, i) => (
-          <SkeletonCard key={i} variant="course" />
-        ))}
+      {/* Hero skeleton */}
+      <div
+        className="card-editorial skeleton-pulse"
+        style={{ padding: "2rem", minHeight: "200px", marginBottom: "2rem" }}
+      />
+
+      {/* Course cards skeleton */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: "1rem",
+          }}
+        >
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonCard key={i} variant="course" />
+          ))}
+        </div>
         <SkeletonCard variant="activity" />
-      </BentoGrid>
+      </div>
     </section>
   );
 }

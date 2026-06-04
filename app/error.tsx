@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { RefreshCw, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertTriangle } from "lucide-react";
 
 interface Props {
   error: Error & { digest?: string };
@@ -22,45 +22,106 @@ export default function ErrorPage({ error, reset }: Props) {
   return (
     <section
       aria-label="Error"
-      className="flex min-h-screen items-center justify-center p-6"
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1.5rem",
+      }}
     >
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-sm rounded-xl border border-white/[0.07] bg-[#111113] p-8 text-center"
+        className="card-editorial"
         role="alert"
+        style={{
+          width: "100%",
+          maxWidth: "380px",
+          padding: "2.5rem",
+          textAlign: "center",
+        }}
       >
-        <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-red-500/10">
-          <AlertCircle className="h-5 w-5 text-red-400" />
+        <div
+          style={{
+            margin: "0 auto 1.5rem",
+            width: 48,
+            height: 48,
+            borderRadius: "50%",
+            background: "rgba(212, 98, 42, 0.12)",
+            border: "1px solid rgba(212, 98, 42, 0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AlertTriangle size={22} color="var(--color-ember)" />
         </div>
 
-        <h1 className="mb-2 text-base font-semibold text-white">
+        <h1
+          className="font-display"
+          style={{
+            fontSize: "1.2rem",
+            fontWeight: 700,
+            color: "var(--color-paper)",
+            marginBottom: "0.5rem",
+            letterSpacing: "-0.01em",
+          }}
+        >
           {isNetwork ? "Connection failed" : "Something went wrong"}
         </h1>
-        <p className="mb-6 text-sm text-[#71717a]">
+        <p style={{ marginBottom: "1.75rem", fontSize: "0.875rem", color: "var(--color-slate-warm)", lineHeight: 1.6 }}>
           {isNetwork
             ? "Can't reach the database. Check your internet connection."
             : "We couldn't load your course data. Your progress is safe."}
         </p>
 
         {error.digest && (
-          <p className="mb-5 font-mono text-[10px] text-[#3f3f46]">
+          <p
+            className="font-mono"
+            style={{ marginBottom: "1.25rem", fontSize: "0.65rem", color: "var(--color-slate-warm)", opacity: 0.6 }}
+          >
             ref: {error.digest}
           </p>
         )}
 
-        <div className="flex flex-col gap-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              padding: "10px 24px",
+              borderRadius: "var(--radius-md)",
+              background: "rgba(201, 168, 76, 0.15)",
+              border: "1px solid rgba(201, 168, 76, 0.3)",
+              color: "var(--color-gold-light)",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+              fontFamily: "var(--font-body)",
+            }}
           >
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw size={14} />
             Try again
           </button>
           <button
             onClick={() => window.location.reload()}
-            className="rounded-lg px-4 py-2 text-sm text-[#71717a] hover:text-white"
+            style={{
+              padding: "10px 24px",
+              borderRadius: "var(--radius-md)",
+              background: "transparent",
+              border: "none",
+              color: "var(--color-slate-warm)",
+              fontSize: "0.875rem",
+              cursor: "pointer",
+              transition: "color 0.15s ease",
+              fontFamily: "var(--font-body)",
+            }}
           >
             Reload page
           </button>

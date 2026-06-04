@@ -1,7 +1,6 @@
 import { getCourses } from "@/lib/supabase/queries";
 import { CourseGrid } from "@/components/dashboard/CourseGrid";
 import { ActivityTile } from "@/components/dashboard/ActivityTile";
-import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { BookOpen } from "lucide-react";
 
 /**
@@ -28,29 +27,97 @@ export async function CoursesSection() {
   }
 
   return (
-    <>
-      {/* Section heading — col-span-full so it spans all grid columns */}
-      <div className="col-span-full mt-2 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white">My courses</h2>
-        <span className="text-xs text-zinc-600">{courses.length} enrolled</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      {/* Section heading */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2
+          className="font-display"
+          style={{
+            fontSize: "1.15rem",
+            fontWeight: 700,
+            color: "var(--color-paper)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Your Courses
+        </h2>
+        <span className="badge-warm">{courses.length} enrolled</span>
       </div>
 
-      <CourseGrid courses={courses} />
+      {/* Courses grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gap: "1rem",
+        }}
+      >
+        <CourseGrid courses={courses} />
+      </div>
+
+      {/* Activity heatmap */}
       <ActivityTile />
-    </>
+    </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="md:col-span-2 lg:col-span-4 flex flex-col items-center justify-center rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-12 text-center">
-      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.05]">
-        <BookOpen className="h-5 w-5 text-zinc-600" />
+    <div
+      className="card-editorial"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "3rem",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          marginBottom: "1rem",
+          width: 44,
+          height: 44,
+          borderRadius: "10px",
+          background: "rgba(201, 168, 76, 0.1)",
+          border: "1px solid rgba(201, 168, 76, 0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <BookOpen size={20} color="var(--color-gold)" />
       </div>
-      <h3 className="mb-1.5 text-sm font-semibold text-white">No courses yet</h3>
-      <p className="max-w-xs text-sm leading-relaxed text-zinc-500">
+      <h3
+        className="font-display"
+        style={{
+          fontSize: "1rem",
+          fontWeight: 700,
+          color: "var(--color-paper)",
+          marginBottom: "0.5rem",
+        }}
+      >
+        No courses yet
+      </h3>
+      <p style={{ fontSize: "0.85rem", color: "var(--color-slate-warm)", maxWidth: "280px", lineHeight: 1.6 }}>
         Add rows to your{" "}
-        <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-xs text-violet-400">
+        <code
+          className="font-mono"
+          style={{
+            fontSize: "0.78rem",
+            color: "var(--color-gold)",
+            background: "rgba(201, 168, 76, 0.1)",
+            padding: "1px 6px",
+            borderRadius: "4px",
+          }}
+        >
           courses
         </code>{" "}
         Supabase table to see them here.
@@ -61,16 +128,54 @@ function EmptyState() {
 
 /**
  * Skeleton shown by <Suspense> while CoursesSection awaits Supabase.
- * Assignment requirement: "implement loading.tsx or Suspense boundaries
- * to show skeleton loaders while data is being fetched"
  */
 export function CoursesSectionSkeleton() {
   return (
-    <>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <SkeletonCard key={i} variant="course" />
-      ))}
-      <SkeletonCard variant="activity" />
-    </>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      {/* heading skeleton */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div
+          className="skeleton-pulse"
+          style={{
+            height: "1.15rem",
+            width: "140px",
+            borderRadius: "6px",
+            background: "var(--color-surface-3)",
+          }}
+        />
+        <div
+          className="skeleton-pulse"
+          style={{
+            height: "1.4rem",
+            width: "80px",
+            borderRadius: "99px",
+            background: "var(--color-surface-3)",
+          }}
+        />
+      </div>
+
+      {/* Course cards skeleton */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gap: "1rem",
+        }}
+      >
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="card-editorial skeleton-pulse"
+            style={{ padding: "1.5rem", minHeight: "160px" }}
+          />
+        ))}
+      </div>
+
+      {/* Activity skeleton */}
+      <div
+        className="card-editorial skeleton-pulse"
+        style={{ padding: "1.5rem", minHeight: "200px" }}
+      />
+    </div>
   );
 }

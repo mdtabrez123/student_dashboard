@@ -23,13 +23,31 @@ function Toggle({ id, checked, onChange }: { id: string; checked: boolean; onCha
       role="switch"
       aria-checked={checked}
       onClick={onChange}
-      className={`relative flex h-5 w-9 items-center rounded-full transition-colors duration-200 ${checked ? "bg-violet-600" : "bg-white/[0.1]"
-        }`}
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        width: 36,
+        height: 20,
+        borderRadius: "99px",
+        background: checked ? "rgba(201, 168, 76, 0.6)" : "var(--color-surface-3)",
+        border: checked ? "1px solid rgba(201, 168, 76, 0.4)" : "1px solid var(--color-border-dim)",
+        cursor: "pointer",
+        transition: "background 0.2s ease, border-color 0.2s ease",
+        flexShrink: 0,
+      }}
     >
       <motion.span
         animate={{ x: checked ? 18 : 2 }}
         transition={{ type: "spring", stiffness: 400, damping: 28 }}
-        className="h-3.5 w-3.5 rounded-full bg-white shadow-sm"
+        style={{
+          width: 14,
+          height: 14,
+          borderRadius: "50%",
+          background: checked ? "var(--color-gold-light)" : "var(--color-slate-warm)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+          display: "block",
+        }}
       />
     </button>
   );
@@ -39,18 +57,29 @@ function SettingRow({
   label, sub, children, id,
 }: { label: string; sub?: string; children: React.ReactNode; id?: string }) {
   return (
-    <div id={id} className="flex items-center justify-between gap-4 py-3.5 border-b border-white/[0.05] last:border-0">
+    <div
+      id={id}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "1rem",
+        padding: "0.875rem 0",
+        borderBottom: "1px solid var(--color-border-dim)",
+      }}
+      className="setting-row-last"
+    >
       <div>
-        <p className="text-sm font-medium text-zinc-200">{label}</p>
-        {sub && <p className="mt-0.5 text-xs text-zinc-600">{sub}</p>}
+        <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-paper)" }}>{label}</p>
+        {sub && <p style={{ marginTop: "2px", fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>{sub}</p>}
       </div>
-      <div className="shrink-0">{children}</div>
+      <div style={{ flexShrink: 0 }}>{children}</div>
     </div>
   );
 }
 
-function Section({ title, icon: Icon, color, children, index }: {
-  title: string; icon: React.ElementType; color: string; children: React.ReactNode; index: number;
+function Section({ title, icon: Icon, accent, bg, border, children, index }: {
+  title: string; icon: React.ElementType; accent: string; bg: string; border: string; children: React.ReactNode; index: number;
 }) {
   return (
     <motion.div
@@ -58,13 +87,30 @@ function Section({ title, icon: Icon, color, children, index }: {
       variants={itemVariants}
       initial="hidden"
       animate="visible"
-      className="rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+      className="card-editorial"
+      style={{ padding: "1.5rem" }}
     >
-      <div className="mb-4 flex items-center gap-2.5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: `${color}20` }}>
-          <Icon className="h-3.5 w-3.5" style={{ color }} />
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1rem" }}>
+        <div
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: "6px",
+            background: bg,
+            border: `1px solid ${border}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Icon size={14} color={accent} />
         </div>
-        <h2 className="text-sm font-semibold text-white">{title}</h2>
+        <h2
+          className="font-display"
+          style={{ fontSize: "0.95rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em" }}
+        >
+          {title}
+        </h2>
       </div>
       {children}
     </motion.div>
@@ -91,68 +137,134 @@ export default function SettingsPage() {
   ];
 
   return (
-    <section aria-label="Settings" className="min-h-screen p-6 md:p-8 lg:p-10">
+    <section aria-label="Settings" style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}>
       {/* Header */}
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Preferences</p>
-          <h1 className="mt-1 text-base font-semibold text-white">Settings</h1>
+      <header style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p
+              style={{
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--color-gold)",
+                marginBottom: "0.35rem",
+              }}
+            >
+              Preferences
+            </p>
+            <h1
+              className="font-display"
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "var(--color-paper)",
+                lineHeight: 1.1,
+              }}
+            >
+              Settings
+            </h1>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            style={{
+              marginTop: "0.25rem",
+              padding: "8px 20px",
+              borderRadius: "var(--radius-md)",
+              background: "rgba(201, 168, 76, 0.15)",
+              border: "1px solid rgba(201, 168, 76, 0.3)",
+              color: "var(--color-gold-light)",
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              letterSpacing: "0.01em",
+            }}
+          >
+            Save changes
+          </motion.button>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-          className="rounded-lg bg-violet-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-violet-500"
-        >
-          Save changes
-        </motion.button>
+        <div className="divider-warm" style={{ marginTop: "1.5rem" }} />
       </header>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "1rem",
+        }}
+        className="settings-grid"
+      >
         {/* Appearance */}
-        <Section title="Appearance" icon={Palette} color="#8b5cf6" index={0}>
-          <p className="mb-3 text-xs text-zinc-600">Choose your preferred theme</p>
-          <div className="grid grid-cols-3 gap-2">
+        <Section title="Appearance" icon={Palette} accent="var(--color-gold)" bg="rgba(201,168,76,0.1)" border="rgba(201,168,76,0.2)" index={0}>
+          <p style={{ marginBottom: "0.75rem", fontSize: "0.78rem", color: "var(--color-slate-warm)" }}>
+            Choose your preferred theme
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
             {THEMES.map(({ id, label, Icon }) => (
               <button
                 key={id}
                 id={`theme-${id}`}
                 onClick={() => setTheme(id)}
-                className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition-all text-xs font-medium ${theme === id
-                  ? "border-violet-500/60 bg-violet-600/10 text-violet-300"
-                  : "border-white/[0.07] bg-white/[0.02] text-zinc-500 hover:border-white/[0.12] hover:text-zinc-300"
-                  }`}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "10px 8px",
+                  borderRadius: "var(--radius-sm)",
+                  border: theme === id ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--color-border-dim)",
+                  background: theme === id ? "rgba(201,168,76,0.1)" : "var(--color-surface-3)",
+                  color: theme === id ? "var(--color-gold-light)" : "var(--color-slate-warm)",
+                  cursor: "pointer",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  transition: "all 0.15s ease",
+                }}
               >
-                <Icon className="h-4 w-4" />
+                <Icon size={16} />
                 {label}
-                {theme === id && <Check className="h-3 w-3 text-violet-400" />}
+                {theme === id && <Check size={12} color="var(--color-gold)" />}
               </button>
             ))}
           </div>
         </Section>
 
         {/* Language & Region */}
-        <Section title="Language & Region" icon={Globe} color="#0ea5e9" index={1}>
+        <Section title="Language & Region" icon={Globe} accent="var(--color-sage)" bg="rgba(107,143,110,0.1)" border="rgba(107,143,110,0.2)" index={1}>
           <SettingRow label="Language" sub="Interface language" id="setting-language">
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="rounded-lg border border-white/[0.07] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 outline-none focus:border-violet-500/50"
+              style={{
+                padding: "5px 10px",
+                borderRadius: "var(--radius-sm)",
+                border: "1px solid var(--color-border-dim)",
+                background: "var(--color-surface-3)",
+                color: "var(--color-paper)",
+                fontSize: "0.78rem",
+                outline: "none",
+                cursor: "pointer",
+                fontFamily: "var(--font-body)",
+              }}
             >
               {["English", "Hindi", "Spanish", "French", "German", "Japanese"].map((l) => (
-                <option key={l} value={l} className="bg-[#0c0c18]">{l}</option>
+                <option key={l} value={l} style={{ background: "var(--color-surface)" }}>{l}</option>
               ))}
             </select>
           </SettingRow>
           <SettingRow label="Timezone" sub="Used for scheduling reminders" id="setting-timezone">
-            <span className="text-xs text-zinc-500">Asia/Kolkata</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>Asia/Kolkata</span>
           </SettingRow>
           <SettingRow label="Date format" id="setting-date-format">
-            <span className="text-xs text-zinc-500">DD / MM / YYYY</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>DD / MM / YYYY</span>
           </SettingRow>
         </Section>
 
         {/* Notifications */}
-        <Section title="Notifications" icon={Bell} color="#f59e0b" index={2}>
+        <Section title="Notifications" icon={Bell} accent="var(--color-gold)" bg="rgba(201,168,76,0.08)" border="rgba(201,168,76,0.2)" index={2}>
           <SettingRow label="Email notifications" sub="Receive course updates via email" id="setting-email-notifs">
             <Toggle id="toggle-email" checked={notifs.email} onChange={() => toggle("notifs", "email")} />
           </SettingRow>
@@ -168,7 +280,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Privacy */}
-        <Section title="Privacy" icon={Eye} color="#10b981" index={3}>
+        <Section title="Privacy" icon={Eye} accent="var(--color-sage)" bg="rgba(107,143,110,0.08)" border="rgba(107,143,110,0.2)" index={3}>
           <SettingRow label="Public profile" sub="Allow others to view your profile" id="setting-public-profile">
             <Toggle id="toggle-public" checked={privacy.publicProfile} onChange={() => toggle("privacy", "publicProfile")} />
           </SettingRow>
@@ -181,7 +293,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Security */}
-        <Section title="Security" icon={Shield} color="#ef4444" index={4}>
+        <Section title="Security" icon={Shield} accent="var(--color-ember)" bg="rgba(212,98,42,0.1)" border="rgba(212,98,42,0.2)" index={4}>
           {[
             { label: "Change password", sub: "Update your login password", Icon: Key, id: "btn-change-password" },
             { label: "Two-factor authentication", sub: "Add an extra security layer", Icon: Lock, id: "btn-2fa" },
@@ -190,36 +302,76 @@ export default function SettingsPage() {
             <button
               key={id}
               id={id}
-              className="flex w-full items-center justify-between border-b border-white/[0.05] py-3.5 last:border-0 hover:opacity-80 transition-opacity"
+              style={{
+                display: "flex",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "0.875rem 0",
+                paddingBottom: "0.875rem",
+                borderBottom: "1px solid var(--color-border-dim)",
+                cursor: "pointer",
+                background: "none",
+                textAlign: "left",
+              }}
+              className="security-row"
             >
-              <div className="flex items-center gap-3 text-left">
-                <Icon className="h-4 w-4 text-zinc-600" />
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <Icon size={15} color="var(--color-slate-warm)" />
                 <div>
-                  <p className="text-sm font-medium text-zinc-200">{label}</p>
-                  <p className="mt-0.5 text-xs text-zinc-600">{sub}</p>
+                  <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-paper)" }}>{label}</p>
+                  <p style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>{sub}</p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-zinc-700" />
+              <ChevronRight size={15} color="var(--color-slate-warm)" style={{ flexShrink: 0 }} />
             </button>
           ))}
         </Section>
 
-        {/* Notifications channels */}
-        <Section title="Contact Channels" icon={Mail} color="#06b6d4" index={5}>
+        {/* Contact Channels */}
+        <Section title="Contact Channels" icon={Mail} accent="var(--color-gold-dim)" bg="rgba(138,111,46,0.1)" border="rgba(138,111,46,0.2)" index={5}>
           {[
-            { label: "Email", value: "alex@learnflow.io", Icon: Mail, id: "contact-email" },
-            { label: "Phone", value: "+91 98765 43210", Icon: Smartphone, id: "contact-phone" },
-            { label: "Sound", value: "Chime (default)", Icon: Volume2, id: "contact-sound" },
+            { label: "Email", value: "alex@learnflow.io", id: "contact-email" },
+            { label: "Phone", value: "+91 98765 43210", id: "contact-phone" },
+            { label: "Sound", value: "Chime (default)", id: "contact-sound" },
           ].map(({ label, value, id }) => (
             <SettingRow key={id} label={label} sub={value} id={id}>
-              <button className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors">
+              <button
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid var(--color-border-dim)",
+                  background: "var(--color-surface-3)",
+                  color: "var(--color-slate-warm)",
+                  fontSize: "0.75rem",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-body)",
+                  transition: "color 0.15s ease",
+                }}
+              >
                 Edit
               </button>
             </SettingRow>
           ))}
         </Section>
-
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .settings-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        .setting-row-last:last-child {
+          border-bottom: none;
+        }
+        .security-row:last-child {
+          border-bottom: none !important;
+        }
+        .security-row:hover {
+          opacity: 0.8;
+        }
+      `}</style>
     </section>
   );
 }

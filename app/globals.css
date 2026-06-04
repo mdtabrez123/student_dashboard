@@ -1,149 +1,257 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), system-ui, sans-serif;
+  /* ── Warm Editorial Dark Palette ── */
+  --color-ink: #0f0e0c;
+  --color-ink-soft: #1a1916;
+  --color-ink-muted: #252320;
+  --color-paper: #f5f0e8;
+  --color-paper-dim: #e8e2d6;
+
+  --color-gold: #c9a84c;
+  --color-gold-light: #e8c96a;
+  --color-gold-dim: #8a6f2e;
+  --color-ember: #d4622a;
+  --color-sage: #6b8f6e;
+  --color-slate-warm: #8a8278;
+
+  --color-surface: #161512;
+  --color-surface-2: #1e1c18;
+  --color-surface-3: #262420;
+  --color-border: rgba(201, 168, 76, 0.15);
+  --color-border-dim: rgba(255, 255, 255, 0.06);
+
+  /* ── Typography ── */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }
 
-/* ─── Reset ──────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gold-dim);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold);
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(201, 168, 76, 0.3);
+    color: var(--color-gold-light);
+  }
+
+  /* Focus */
+  :focus-visible {
+    outline: 2px solid rgba(201, 168, 76, 0.65);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
+/* ── Noise texture overlay ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
 }
 
-body {
-  background: #050507;
-  color: #f0f0f5;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+/* ── Typography helpers ── */
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
 }
 
-/* ─── Scrollbar ─────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 4px;
+/* ── Gold gradient text ── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-gold-dim) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Card styles ── */
+.card-editorial {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-editorial::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── Progress bar ── */
+.progress-track {
   height: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-surface-3);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
 }
 
-/* ─── Selection ─────────────────────────────────────── */
-::selection {
-  background: rgba(124, 58, 237, 0.28);
-  color: #fff;
+.progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--color-gold-dim), var(--color-gold-light));
+  position: relative;
 }
 
-/* ─── Focus ─────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid rgba(139, 92, 246, 0.65);
-  outline-offset: 2px;
-  border-radius: 6px;
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(232, 201, 106, 0.6));
+  border-radius: 99px;
 }
 
-/* ─── Keyframes ─────────────────────────────────────── */
+/* ── Sidebar / Nav styles ── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--color-slate-warm);
+  font-size: 0.875rem;
+  font-weight: 450;
+  letter-spacing: 0.01em;
+  transition: color 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  color: var(--color-paper);
+}
+
+.nav-item.active {
+  color: var(--color-gold-light);
+}
+
+/* ── Activity grid ── */
+.activity-cell {
+  border-radius: 3px;
+  transition: transform 0.1s ease;
+}
+
+/* ── Subtle divider ── */
+.divider-warm {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+}
+
+/* ── Stat number style ── */
+.stat-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ── Tag / badge ── */
+.badge-warm {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--color-gold);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+/* ── Skeleton pulse ── */
 @keyframes skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.28;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-@keyframes aurora {
-  0%,
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(28px, -18px) scale(1.06);
-  }
-  66% {
-    transform: translate(-18px, 14px) scale(0.95);
-  }
-}
-
-@keyframes aurora-b {
-  0%,
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  40% {
-    transform: translate(-24px, 22px) scale(1.09);
-  }
-  70% {
-    transform: translate(16px, -12px) scale(0.93);
-  }
-}
-
-@keyframes shimmer {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(250%);
-  }
-}
-
-@keyframes glow-pulse {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.75;
-  }
-}
-
-@keyframes float-y {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-/* ─── Utility classes ────────────────────────────────── */
 .skeleton-pulse {
   animation: skeleton-pulse 1.7s ease-in-out infinite;
 }
 
-.aurora-a {
-  animation: aurora 20s ease-in-out infinite;
-}
-
-.aurora-b {
-  animation: aurora-b 26s ease-in-out infinite;
-}
-
-.aurora-c {
-  animation: aurora 16s ease-in-out infinite reverse;
+/* ── Shimmer ── */
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
 }
 
 .shimmer {
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+/* ── Gold glow pulse ── */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.75; }
+}
+
 .glow-pulse {
   animation: glow-pulse 3.2s ease-in-out infinite;
+}
+
+/* ── Float Y ── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
 .float-y {

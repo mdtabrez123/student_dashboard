@@ -21,18 +21,18 @@ const MAX_HOURS = Math.max(...WEEKLY_HOURS.map((w) => w.hours));
 
 /* ── Subject breakdown ── */
 const SUBJECTS = [
-  { label: "TypeScript", pct: 34, color: "#7c3aed" },
-  { label: "System Design", pct: 22, color: "#0ea5e9" },
-  { label: "Machine Learning", pct: 28, color: "#10b981" },
-  { label: "Web Performance", pct: 16, color: "#f59e0b" },
+  { label: "TypeScript", pct: 34, color: "var(--color-gold)" },
+  { label: "System Design", pct: 22, color: "var(--color-ember)" },
+  { label: "Machine Learning", pct: 28, color: "var(--color-sage)" },
+  { label: "Web Performance", pct: 16, color: "#8b7dd8" },
 ];
 
 /* ── KPI cards ── */
 const KPIS = [
-  { icon: Clock, label: "Total Study Time", value: "148h", sub: "this year", color: "#8b5cf6", trend: "up" },
-  { icon: Flame, label: "Current Streak", value: "14", sub: "days", color: "#f97316", trend: "up" },
-  { icon: Target, label: "Goals Completed", value: "23", sub: "of 30 set", color: "#10b981", trend: "up" },
-  { icon: Trophy, label: "Leaderboard", value: "Top 8%", sub: "among 4.8k users", color: "#eab308", trend: "same" },
+  { icon: Clock, label: "Total Study Time", value: "148h", sub: "this year", accent: "var(--color-gold)", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.2)", trend: "up" },
+  { icon: Flame, label: "Current Streak", value: "14", sub: "days", accent: "var(--color-ember)", bg: "rgba(212,98,42,0.1)", border: "rgba(212,98,42,0.2)", trend: "up" },
+  { icon: Target, label: "Goals Completed", value: "23", sub: "of 30 set", accent: "var(--color-sage)", bg: "rgba(107,143,110,0.1)", border: "rgba(107,143,110,0.2)", trend: "up" },
+  { icon: Trophy, label: "Leaderboard", value: "Top 8%", sub: "among 4.8k users", accent: "#8b7dd8", bg: "rgba(139,125,216,0.1)", border: "rgba(139,125,216,0.2)", trend: "same" },
 ];
 
 /* ── Monthly comparison ── */
@@ -44,11 +44,11 @@ const MAX_MONTHLY = Math.max(...MONTHLY.map((m) => m.hours));
 
 /* ── Recent milestones ── */
 const MILESTONES = [
-  { text: "Completed TypeScript Generics module", time: "2 days ago", icon: BookOpen, color: "#7c3aed" },
-  { text: "7-day streak achieved", time: "1 week ago", icon: Flame, color: "#f97316" },
-  { text: "Scored 94% on System Design quiz", time: "1 week ago", icon: Target, color: "#10b981" },
-  { text: "Reached top 10% on leaderboard", time: "2 weeks ago", icon: Trophy, color: "#eab308" },
-  { text: "Finished ML Fundamentals section", time: "3 weeks ago", icon: TrendingUp, color: "#0ea5e9" },
+  { text: "Completed TypeScript Generics module", time: "2 days ago", icon: BookOpen, accent: "var(--color-gold)", bg: "rgba(201,168,76,0.1)" },
+  { text: "7-day streak achieved", time: "1 week ago", icon: Flame, accent: "var(--color-ember)", bg: "rgba(212,98,42,0.1)" },
+  { text: "Scored 94% on System Design quiz", time: "1 week ago", icon: Target, accent: "var(--color-sage)", bg: "rgba(107,143,110,0.1)" },
+  { text: "Reached top 10% on leaderboard", time: "2 weeks ago", icon: Trophy, accent: "#8b7dd8", bg: "rgba(139,125,216,0.1)" },
+  { text: "Finished ML Fundamentals section", time: "3 weeks ago", icon: TrendingUp, accent: "var(--color-gold-dim)", bg: "rgba(138,111,46,0.1)" },
 ];
 
 const itemVariants = {
@@ -60,27 +60,63 @@ const itemVariants = {
 };
 
 function TrendIcon({ trend }: { trend: string }) {
-  if (trend === "up") return <ArrowUp className="h-3 w-3 text-emerald-400" />;
-  if (trend === "down") return <ArrowDown className="h-3 w-3 text-red-400" />;
-  return <Minus className="h-3 w-3 text-zinc-500" />;
+  if (trend === "up") return <ArrowUp size={12} color="var(--color-sage)" />;
+  if (trend === "down") return <ArrowDown size={12} color="var(--color-ember)" />;
+  return <Minus size={12} color="var(--color-slate-warm)" />;
 }
 
 export default function AnalyticsPage() {
   return (
-    <section aria-label="Analytics" className="min-h-screen p-6 md:p-8 lg:p-10">
+    <section aria-label="Analytics" style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}>
       {/* Header */}
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Insights</p>
-          <h1 className="mt-1 text-base font-semibold text-white">Analytics</h1>
+      <header style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p
+              style={{
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--color-gold)",
+                marginBottom: "0.35rem",
+              }}
+            >
+              Insights
+            </p>
+            <h1
+              className="font-display"
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "var(--color-paper)",
+                lineHeight: 1.1,
+              }}
+            >
+              Analytics
+            </h1>
+          </div>
+          <div
+            className="badge-warm"
+            style={{ marginTop: "0.25rem", display: "flex", alignItems: "center", gap: "6px" }}
+          >
+            <Calendar size={11} />
+            Last 12 months
+          </div>
         </div>
-        <span className="flex items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-xs text-zinc-500">
-          <Calendar className="h-3 w-3" /> Last 12 months
-        </span>
+        <div className="divider-warm" style={{ marginTop: "1.5rem" }} />
       </header>
 
       {/* KPI Cards */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: "1rem",
+          marginBottom: "2rem",
+        }}
+      >
         {KPIS.map((kpi, i) => {
           const Icon = kpi.icon;
           return (
@@ -90,58 +126,106 @@ export default function AnalyticsPage() {
               variants={itemVariants}
               initial="hidden"
               animate="visible"
-              className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+              whileHover={{ scale: 1.02 }}
+              className="card-editorial"
+              style={{ padding: "1.25rem 1.5rem" }}
             >
-              <div className="pointer-events-none absolute inset-0"
-                style={{ background: `radial-gradient(ellipse 80% 60% at 0% 0%, ${kpi.color}12 0%, transparent 65%)` }} />
-              <div className="relative flex items-start justify-between">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl" style={{ background: `${kpi.color}20` }}>
-                  <Icon className="h-4 w-4" style={{ color: kpi.color }} />
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "8px",
+                    background: kpi.bg,
+                    border: `1px solid ${kpi.border}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon size={16} color={kpi.accent} />
                 </div>
-                <div className="flex items-center gap-1 rounded-md border border-white/[0.05] bg-white/[0.03] px-1.5 py-0.5 text-[10px]">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "2px 8px",
+                    borderRadius: "99px",
+                    background: "var(--color-surface-3)",
+                    border: "1px solid var(--color-border-dim)",
+                  }}
+                >
                   <TrendIcon trend={kpi.trend} />
                 </div>
               </div>
-              <p className="relative mt-4 text-2xl font-bold tabular-nums text-white">{kpi.value}</p>
-              <p className="relative text-xs font-medium text-zinc-400">{kpi.label}</p>
-              <p className="relative mt-0.5 text-[10px] text-zinc-600">{kpi.sub}</p>
+              <p
+                className="stat-number"
+                style={{ fontSize: "1.75rem", color: "var(--color-paper)", marginBottom: "2px" }}
+              >
+                {kpi.value}
+              </p>
+              <p style={{ fontSize: "0.78rem", color: "var(--color-paper)", fontWeight: 500, marginBottom: "2px" }}>
+                {kpi.label}
+              </p>
+              <p style={{ fontSize: "0.7rem", color: "var(--color-slate-warm)" }}>{kpi.sub}</p>
             </motion.div>
           );
         })}
       </div>
 
       {/* Charts row */}
-      <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "1rem",
+          marginBottom: "2rem",
+        }}
+        className="analytics-charts-grid"
+      >
         {/* Weekly study hours bar chart */}
         <motion.div
           custom={4}
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="lg:col-span-2 rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+          className="card-editorial"
+          style={{ padding: "1.5rem" }}
         >
-          <div className="mb-5 flex items-center justify-between">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
             <div>
-              <h2 className="text-sm font-semibold text-white">Weekly Study Hours</h2>
-              <p className="mt-0.5 text-xs text-zinc-600">Last 8 weeks</p>
+              <h2
+                className="font-display"
+                style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em" }}
+              >
+                Weekly Study Hours
+              </h2>
+              <p style={{ marginTop: "2px", fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>Last 8 weeks</p>
             </div>
-            <BarChart3 className="h-4 w-4 text-violet-400" />
+            <BarChart3 size={16} color="var(--color-gold)" />
           </div>
-          <div className="flex h-36 items-end gap-2">
+          <div style={{ display: "flex", height: "140px", alignItems: "flex-end", gap: "8px" }}>
             {WEEKLY_HOURS.map((w, i) => (
-              <div key={w.week} className="flex flex-1 flex-col items-center gap-1.5">
-                <span className="text-[9px] tabular-nums text-zinc-700">{w.hours}h</span>
-                <div className="relative w-full overflow-hidden rounded-t-lg bg-white/[0.04]" style={{ height: "100px" }}>
+              <div key={w.week} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+                <span className="font-mono" style={{ fontSize: "0.65rem", color: "var(--color-slate-warm)" }}>{w.hours}h</span>
+                <div style={{ position: "relative", width: "100%", height: "100px", background: "var(--color-surface-3)", borderRadius: "4px 4px 0 0", overflow: "hidden" }}>
                   <motion.div
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: w.hours / MAX_HOURS }}
                     transition={{ delay: 0.3 + i * 0.06, type: "spring", stiffness: 220, damping: 22 }}
-                    style={{ transformOrigin: "bottom", background: "linear-gradient(to top, #7c3aed, #a78bfa)" }}
-                    className="absolute bottom-0 left-0 right-0 rounded-t-lg"
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      transformOrigin: "bottom",
+                      background: "linear-gradient(to top, var(--color-gold-dim), var(--color-gold-light))",
+                      borderRadius: "4px 4px 0 0",
+                    }}
                   />
                 </div>
-                <span className="text-[9px] text-zinc-600">{w.week}</span>
+                <span style={{ fontSize: "0.65rem", color: "var(--color-slate-warm)" }}>{w.week}</span>
               </div>
             ))}
           </div>
@@ -153,40 +237,45 @@ export default function AnalyticsPage() {
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+          className="card-editorial"
+          style={{ padding: "1.5rem" }}
         >
-          <div className="mb-5 flex items-center justify-between">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
             <div>
-              <h2 className="text-sm font-semibold text-white">Subject Breakdown</h2>
-              <p className="mt-0.5 text-xs text-zinc-600">Time distribution</p>
+              <h2
+                className="font-display"
+                style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em" }}
+              >
+                Subject Breakdown
+              </h2>
+              <p style={{ marginTop: "2px", fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>Time distribution</p>
             </div>
-            <Target className="h-4 w-4 text-emerald-400" />
+            <Target size={16} color="var(--color-sage)" />
           </div>
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {SUBJECTS.map((s, i) => (
               <div key={s.label}>
-                <div className="mb-1 flex items-center justify-between text-xs">
-                  <span className="text-zinc-400">{s.label}</span>
-                  <span className="tabular-nums text-zinc-500">{s.pct}%</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--color-paper)", fontWeight: 500 }}>{s.label}</span>
+                  <span className="font-mono" style={{ fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>{s.pct}%</span>
                 </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.05]">
+                <div className="progress-track">
                   <motion.div
+                    className="progress-fill"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: s.pct / 100 }}
                     transition={{ delay: 0.4 + i * 0.08, type: "spring", stiffness: 220, damping: 22 }}
-                    style={{ transformOrigin: "left", background: s.color }}
-                    className="h-full rounded-full"
+                    style={{ background: `linear-gradient(90deg, ${s.color}66, ${s.color})` }}
                   />
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Donut-like visual */}
-          <div className="mt-5 flex gap-2 flex-wrap">
+          <div style={{ marginTop: "1rem", display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {SUBJECTS.map((s) => (
-              <span key={s.label} className="flex items-center gap-1 text-[10px] text-zinc-500">
-                <span className="h-2 w-2 rounded-full" style={{ background: s.color }} />
+              <span key={s.label} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", color: "var(--color-slate-warm)" }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color, display: "inline-block" }} />
                 {s.label}
               </span>
             ))}
@@ -195,36 +284,55 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Monthly + Milestones row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "1rem",
+        }}
+        className="analytics-charts-grid"
+      >
         {/* Monthly hours */}
         <motion.div
           custom={6}
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="lg:col-span-2 rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+          className="card-editorial"
+          style={{ padding: "1.5rem" }}
         >
-          <div className="mb-5 flex items-center justify-between">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
             <div>
-              <h2 className="text-sm font-semibold text-white">Monthly Progress</h2>
-              <p className="mt-0.5 text-xs text-zinc-600">Hours studied per month</p>
+              <h2
+                className="font-display"
+                style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em" }}
+              >
+                Monthly Progress
+              </h2>
+              <p style={{ marginTop: "2px", fontSize: "0.75rem", color: "var(--color-slate-warm)" }}>Hours studied per month</p>
             </div>
-            <TrendingUp className="h-4 w-4 text-emerald-400" />
+            <TrendingUp size={16} color="var(--color-sage)" />
           </div>
-          <div className="flex h-28 items-end gap-3">
+          <div style={{ display: "flex", height: "112px", alignItems: "flex-end", gap: "12px" }}>
             {MONTHLY.map((m, i) => (
-              <div key={m.month} className="flex flex-1 flex-col items-center gap-1.5">
-                <div className="relative w-full overflow-hidden rounded-t-lg bg-white/[0.04]" style={{ height: "88px" }}>
+              <div key={m.month} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+                <div style={{ position: "relative", width: "100%", height: "88px", background: "var(--color-surface-3)", borderRadius: "4px 4px 0 0", overflow: "hidden" }}>
                   <motion.div
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: m.hours / MAX_MONTHLY }}
                     transition={{ delay: 0.3 + i * 0.07, type: "spring", stiffness: 220, damping: 22 }}
-                    style={{ transformOrigin: "bottom", background: "linear-gradient(to top, #10b981, #34d399)" }}
-                    className="absolute bottom-0 left-0 right-0 rounded-t-lg"
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      transformOrigin: "bottom",
+                      background: "linear-gradient(to top, var(--color-sage), rgba(107,143,110,0.5))",
+                      borderRadius: "4px 4px 0 0",
+                    }}
                   />
                 </div>
-                <span className="text-[9px] text-zinc-600">{m.month}</span>
+                <span style={{ fontSize: "0.65rem", color: "var(--color-slate-warm)" }}>{m.month}</span>
               </div>
             ))}
           </div>
@@ -236,20 +344,39 @@ export default function AnalyticsPage() {
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="rounded-2xl border border-white/[0.07] bg-[#0f0f1c] p-5"
+          className="card-editorial"
+          style={{ padding: "1.5rem" }}
         >
-          <h2 className="mb-4 text-sm font-semibold text-white">Recent Milestones</h2>
-          <div className="space-y-3">
+          <h2
+            className="font-display"
+            style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-paper)", letterSpacing: "-0.01em", marginBottom: "1rem" }}
+          >
+            Recent Milestones
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {MILESTONES.map((m, i) => {
               const Icon = m.icon;
               return (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg" style={{ background: `${m.color}20` }}>
-                    <Icon className="h-3 w-3" style={{ color: m.color }} />
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                  <div
+                    style={{
+                      marginTop: "2px",
+                      width: 24,
+                      height: 24,
+                      borderRadius: "6px",
+                      background: m.bg,
+                      border: `1px solid ${m.accent}33`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={12} color={m.accent} />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs leading-snug text-zinc-300">{m.text}</p>
-                    <p className="mt-0.5 text-[10px] text-zinc-600">{m.time}</p>
+                  <div>
+                    <p style={{ fontSize: "0.78rem", color: "var(--color-paper)", lineHeight: 1.4 }}>{m.text}</p>
+                    <p style={{ marginTop: "2px", fontSize: "0.68rem", color: "var(--color-slate-warm)" }}>{m.time}</p>
                   </div>
                 </div>
               );
@@ -257,6 +384,14 @@ export default function AnalyticsPage() {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .analytics-charts-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
