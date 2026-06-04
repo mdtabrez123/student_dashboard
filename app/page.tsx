@@ -7,7 +7,7 @@ import {
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-full pb-24 md:pb-8" style={{ padding: "2rem 2rem 4rem" }}>
+    <div className="page-container">
       {/* Page header */}
       <header style={{ marginBottom: "2rem" }}>
         <div

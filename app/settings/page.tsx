@@ -137,7 +137,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <section aria-label="Settings" style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}>
+    <section aria-label="Settings" className="page-container">
       {/* Header */}
       <header style={{ marginBottom: "2rem" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
@@ -189,14 +189,7 @@ export default function SettingsPage() {
         <div className="divider-warm" style={{ marginTop: "1.5rem" }} />
       </header>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1rem",
-        }}
-        className="settings-grid"
-      >
+      <div className="settings-grid">
         {/* Appearance */}
         <Section title="Appearance" icon={Palette} accent="var(--color-gold)" bg="rgba(201,168,76,0.1)" border="rgba(201,168,76,0.2)" index={0}>
           <p style={{ marginBottom: "0.75rem", fontSize: "0.78rem", color: "var(--color-slate-warm)" }}>
@@ -356,22 +349,7 @@ export default function SettingsPage() {
         </Section>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .settings-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-        .setting-row-last:last-child {
-          border-bottom: none;
-        }
-        .security-row:last-child {
-          border-bottom: none !important;
-        }
-        .security-row:hover {
-          opacity: 0.8;
-        }
-      `}</style>
+
     </section>
   );
 }

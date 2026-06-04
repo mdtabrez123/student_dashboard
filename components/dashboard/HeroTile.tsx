@@ -77,11 +77,9 @@ export function HeroTile() {
       />
 
       <div
+        className="hero-tile-inner"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          gap: "1.5rem",
-          padding: "2rem",
+          padding: "1.75rem",
           position: "relative",
         }}
       >
@@ -221,6 +219,7 @@ export function HeroTile() {
 
         {/* Right: streak bars */}
         <div
+          className="hero-streak-panel"
           style={{
             display: "flex",
             flexDirection: "column",

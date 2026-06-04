@@ -27,12 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body style={{ background: "var(--color-ink)", color: "var(--color-paper)", fontFamily: "var(--font-body)" }}>
-        <div className="flex h-dvh overflow-hidden">
+        <div className="app-shell">
           <Sidebar />
-          <main
-            className="flex-1 overflow-y-auto relative pb-20 md:pb-0"
-            style={{ zIndex: 1 }}
-          >
+          <main className="app-main">
             {children}
           </main>
         </div>

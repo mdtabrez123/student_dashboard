@@ -257,3 +257,214 @@ body::before {
 .float-y {
   animation: float-y 4s ease-in-out infinite;
 }
+
+/* ────────────────────────────────────────────────────────
+   App Shell Layout
+   ──────────────────────────────────────────────────────── */
+.app-shell {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+  /* Mobile: leave room for fixed bottom nav */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 70px);
+}
+
+@media (min-width: 768px) {
+  .app-main {
+    padding-bottom: 0;
+  }
+}
+
+/* ── Mobile bottom nav: flex on mobile, hidden on desktop ── */
+.mobile-bottom-nav {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+
+/* ────────────────────────────────────────────────────────
+   Page-level responsive padding
+   ──────────────────────────────────────────────────────── */
+.page-container {
+  padding: 1.25rem 1rem 2rem;
+  min-height: 100%;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding: 1.75rem 1.5rem 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: 2rem 2.5rem 3rem;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   Hero Tile responsive inner layout
+   ──────────────────────────────────────────────────────── */
+.hero-tile-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .hero-tile-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2rem;
+  }
+}
+
+/* Hide streak panel on very small screens */
+.hero-streak-panel {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .hero-streak-panel {
+    display: flex;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   Quick stats responsive wrap
+   ──────────────────────────────────────────────────────── */
+.quick-stats-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ────────────────────────────────────────────────────────
+   Settings grid
+   ──────────────────────────────────────────────────────── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .settings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.setting-row-last:last-child {
+  border-bottom: none;
+}
+
+.security-row {
+  color: inherit;
+}
+.security-row:last-child {
+  border-bottom: none !important;
+}
+.security-row:hover {
+  opacity: 0.8;
+}
+
+/* ────────────────────────────────────────────────────────
+   Sidebar toggle button — ensure visible above sidebar border
+   ──────────────────────────────────────────────────────── */
+.sidebar-toggle {
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+}
+
+/* ────────────────────────────────────────────────────────
+   Analytics layout
+   ──────────────────────────────────────────────────────── */
+.analytics-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .analytics-charts-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   Profile layout
+   ──────────────────────────────────────────────────────── */
+.profile-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .profile-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-main-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}

@@ -51,7 +51,7 @@ export function CoursesClient({ initialEnrolled }: CoursesClientProps) {
   }, [enrolledMapped, filter, search]);
 
   return (
-    <section aria-label="Courses" style={{ padding: "2rem 2rem 4rem", minHeight: "100vh" }}>
+    <section aria-label="Courses" className="page-container">
       {/* Header */}
       <header style={{ marginBottom: "2rem" }}>
         <div
